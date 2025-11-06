@@ -49,6 +49,11 @@ export const typeDefs = gql`
     period: PeriodInput!
   }
 
+  type AutoInsight {
+    message: String!
+    type?: String!
+  }
+
   type Query {
     dashboards: [Dashboard!]!
     dashboard(id: Int!): Dashboard
@@ -57,6 +62,7 @@ export const typeDefs = gql`
     ): [DeliveryRegionTrend!]!
     lostButLoyal: [LostCustomer!]!
     topProducts(input: TopProductsInput!): [ProductAgg!]!
+    autoInsights: [AutoInsight!]!
   }
 
   type Mutation {
