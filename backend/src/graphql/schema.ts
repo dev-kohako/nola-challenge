@@ -33,6 +33,22 @@ export const typeDefs = gql`
     last_date: String!
   }
 
+  type ProductAgg {
+    product_id: ID!
+    total_itens: Int!
+    faturamento: Float!
+    faturamento_prev: Float
+    delta_percent: Float
+  }
+
+  input TopProductsInput {
+    channel: String
+    dow: Int
+    hourFrom: Int
+    hourTo: Int
+    period: PeriodInput!
+  }
+
   type Query {
     dashboards: [Dashboard!]!
     dashboard(id: Int!): Dashboard
@@ -40,6 +56,7 @@ export const typeDefs = gql`
       input: DeliveryRegionTrendInput!
     ): [DeliveryRegionTrend!]!
     lostButLoyal: [LostCustomer!]!
+    topProducts(input: TopProductsInput!): [ProductAgg!]!
   }
 
   type Mutation {
