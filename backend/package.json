@@ -1,0 +1,39 @@
+{
+  "name": "nola-analytics-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Backend do desafio God Level Coder Challenge — plataforma de analytics para restaurantes",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node --transpile-only src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "prisma:generate": "prisma generate",
+    "prisma:pull": "prisma db pull",
+    "prisma:studio": "prisma studio",
+    "test": "jest --config jest.config.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.18.0",
+    "@types/jest": "^30.0.0",
+    "apollo-server": "^3.13.0",
+    "apollo-server-testing": "^2.25.3",
+    "dotenv": "^16.4.5",
+    "graphql": "^16.12.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "prisma": "^6.18.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Joseph Kawe (KWK Tech)",
+  "license": "MIT"
+}
