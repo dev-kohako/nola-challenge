@@ -75,6 +75,11 @@ export default function ExplorePage() {
     });
   }, [data?.pivot?.rows, previous, filters.dimensions]);
 
+  const paginatedMerged = useMemo(() => {
+    const start = (page - 1) * 10;
+    return merged.slice(start, start + 10);
+  }, [merged, page]);
+
   return (
     <main className="px-3 sm:px-4 md:px-6 py-4 md:py-6 max-w-7xl mx-auto space-y-6 sm:space-y-8 overflow-hidden">
       <header className="text-center space-y-2">
@@ -316,7 +321,7 @@ export default function ExplorePage() {
                 </thead>
 
                 <tbody>
-                  {merged.map((row, i) => (
+                  {paginatedMerged.map((row, i) => (
                     <tr key={i} className="hover:bg-muted/20 transition-colors">
                       {filters.dimensions?.map((dim) => (
                         <td

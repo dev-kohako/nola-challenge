@@ -54,12 +54,18 @@ export const pct = (value: number | null | undefined, digits = 2): string => {
 };
 
 export function getPrevRange(from: string, to: string) {
-  const f = new Date(from); const t = new Date(to);
-  const ms = t.getTime() - f.getTime() + 24*60*60*1000;
-  const prevTo = new Date(f.getTime() - 24*60*60*1000);
-  const prevFrom = new Date(prevTo.getTime() - (ms - 24*60*60*1000));
-  const iso = (d: Date) => d.toISOString().slice(0,10);
-  return { prevFrom: iso(prevFrom), prevTo: iso(prevTo) };
+  const start = new Date(from);
+  const end = new Date(to);
+
+  const diff = end.getTime() - start.getTime();
+
+  const prevTo = new Date(start.getTime() - 24 * 60 * 60 * 1000);
+  const prevFrom = new Date(prevTo.getTime() - diff);
+
+  return {
+    prevFrom: prevFrom.toISOString(),
+    prevTo: prevTo.toISOString(),
+  };
 }
 
 export function exportToCSV(rows: any[], filename: string) {
