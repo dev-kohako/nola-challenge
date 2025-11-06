@@ -44,21 +44,12 @@ export function useExplore(initialFilters?: ExploreSchemaType) {
     { fetchPolicy: "network-only" }
   );
 
-  const paginatedRows = useMemo(() => {
-    if (!data?.pivot.rows) return [];
-    const start = (page - 1) * itemsPerPage;
-    return data.pivot.rows.slice(start, start + itemsPerPage);
-  }, [data, page]);
-
-  const totalPages = data
-    ? Math.ceil(data.pivot.rows.length / itemsPerPage)
-    : 1;
-
   if (error) toast.error("Erro ao carregar dados de exploração");
 
   const handleRun = async (compare: boolean) => {
     try {
       const { dateRange } = filters;
+      setPrevious(null);
 
       const input: PivotInput = {
         dimensions: filters.dimensions,
@@ -77,13 +68,10 @@ export function useExplore(initialFilters?: ExploreSchemaType) {
           : null,
       };
 
-      await runPivot({ variables: { input } });
+      const { data: currData } = await runPivot({ variables: { input } });
 
       if (compare && dateRange?.from && dateRange?.to) {
-        const { prevFrom, prevTo } = getPrevRange(
-          dateRange.from,
-          dateRange.to
-        );
+        const { prevFrom, prevTo } = getPrevRange(dateRange.from, dateRange.to);
         const prevInput = {
           ...input,
           dateRange: { from: prevFrom, to: prevTo },
@@ -95,10 +83,23 @@ export function useExplore(initialFilters?: ExploreSchemaType) {
       } else {
         setPrevious(null);
       }
-    } catch {
+
+      return currData?.pivot?.rows ?? [];
+    } catch (err) {
+      console.error(err);
       toast.error("Erro ao executar análise");
     }
   };
+
+  const paginatedRows = useMemo(() => {
+    if (!data?.pivot?.rows) return [];
+    const start = (page - 1) * itemsPerPage;
+    return data.pivot.rows.slice(start, start + itemsPerPage);
+  }, [data, page]);
+
+  const totalPages = data
+    ? Math.ceil(data.pivot.rows.length / itemsPerPage)
+    : 1;
 
   const [saveDashboard, { loading: saving }] = useMutation<
     SaveDashboardMutation,
