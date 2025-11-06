@@ -1,0 +1,31 @@
+{
+  "devDependencies": {
+    "@commitlint/config-conventional": "^19.8.1",
+    "@types/node": "^24.10.0",
+    "commitizen": "^4.3.1",
+    "commitlint": "^19.8.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "prepare": "husky"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+    "@prisma/client": "^6.18.0",
+    "@types/pg": "^8.15.6",
+    "apollo-server": "^3.13.0",
+    "dotenv": "^17.2.3",
+    "graphql": "^16.12.0",
+    "pg": "^8.16.3",
+    "prisma": "^6.18.0",
+    "zod": "^4.1.12"
+  }
+}
