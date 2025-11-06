@@ -10,6 +10,7 @@ import {
   getDeliveryRegionTrend,
   getLostButLoyal,
   getTopProducts,
+  getAutoInsights,
 } from "../controllers";
 
 import {
@@ -28,6 +29,7 @@ const CACHE_TTLS = {
   DELIVERY_REGION_TREND: 60_000,
   LOST_LOYAL: 60_000,
   TOP_PRODUCTS: 60_000,
+  AUTO_INSIGHTS: 30_000,
 };
 
 const JSONScalar = new GraphQLScalarType({
@@ -94,6 +96,10 @@ export const resolvers = {
           getTopProducts(parsed)
         );
       }
+    ),
+
+    autoInsights: wrapResolver(async () =>
+      cacheWrap("autoInsights", CACHE_TTLS.AUTO_INSIGHTS, getAutoInsights)
     ),
   },
 
