@@ -1,0 +1,322 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model brands {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  created_at    DateTime?       @default(now()) @db.Timestamp(6)
+  categories    categories[]
+  channels      channels[]
+  coupons       coupons[]
+  items         items[]
+  option_groups option_groups[]
+  payment_types payment_types[]
+  products      products[]
+  stores        stores[]
+  sub_brands    sub_brands[]
+}
+
+model sub_brands {
+  id            Int             @id @default(autoincrement())
+  brand_id      Int?
+  name          String          @db.VarChar(255)
+  created_at    DateTime?       @default(now()) @db.Timestamp(6)
+  categories    categories[]
+  customers     customers[]
+  items         items[]
+  option_groups option_groups[]
+  products      products[]
+  sales         sales[]
+  stores        stores[]
+  brand         brands?         @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model stores {
+  id             Int         @id @default(autoincrement())
+  brand_id       Int?
+  sub_brand_id   Int?
+  name           String      @db.VarChar(255)
+  city           String?     @db.VarChar(100)
+  state          String?     @db.VarChar(2)
+  district       String?     @db.VarChar(100)
+  address_street String?     @db.VarChar(200)
+  address_number Int?
+  zipcode        String?     @db.VarChar(10)
+  latitude       Decimal?    @db.Decimal(9, 6)
+  longitude      Decimal?    @db.Decimal(9, 6)
+  is_active      Boolean?    @default(true)
+  is_own         Boolean?    @default(false)
+  is_holding     Boolean?    @default(false)
+  creation_date  DateTime?   @db.Date
+  created_at     DateTime?   @default(now()) @db.Timestamp(6)
+  customers      customers[]
+  sales          sales[]
+  brand          brands?     @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sub_brand      sub_brands? @relation(fields: [sub_brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model channels {
+  id          Int       @id @default(autoincrement())
+  brand_id    Int?
+  name        String    @db.VarChar(100)
+  description String?   @db.VarChar(255)
+  type        String?   @db.Char(1)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  brand       brands?   @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sales       sales[]
+}
+
+model categories {
+  id            Int             @id @default(autoincrement())
+  brand_id      Int?
+  sub_brand_id  Int?
+  name          String          @db.VarChar(200)
+  type          String?         @default("P") @db.Char(1)
+  pos_uuid      String?         @db.VarChar(100)
+  deleted_at    DateTime?       @db.Timestamp(6)
+  brand         brands?         @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sub_brand     sub_brands?     @relation(fields: [sub_brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  items         items[]
+  option_groups option_groups[]
+  products      products[]
+}
+
+model products {
+  id            Int             @id @default(autoincrement())
+  brand_id      Int?
+  sub_brand_id  Int?
+  category_id   Int?
+  name          String          @db.VarChar(500)
+  pos_uuid      String?         @db.VarChar(100)
+  deleted_at    DateTime?       @db.Timestamp(6)
+  product_sales product_sales[]
+  brand         brands?         @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  category      categories?     @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sub_brand     sub_brands?     @relation(fields: [sub_brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model option_groups {
+  id                      Int                       @id @default(autoincrement())
+  brand_id                Int?
+  sub_brand_id            Int?
+  category_id             Int?
+  name                    String                    @db.VarChar(500)
+  pos_uuid                String?                   @db.VarChar(100)
+  deleted_at              DateTime?                 @db.Timestamp(6)
+  item_item_product_sales item_item_product_sales[]
+  item_product_sales      item_product_sales[]
+  brand                   brands?                   @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  category                categories?               @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sub_brand               sub_brands?               @relation(fields: [sub_brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model items {
+  id                      Int                       @id @default(autoincrement())
+  brand_id                Int?
+  sub_brand_id            Int?
+  category_id             Int?
+  name                    String                    @db.VarChar(500)
+  pos_uuid                String?                   @db.VarChar(100)
+  deleted_at              DateTime?                 @db.Timestamp(6)
+  item_item_product_sales item_item_product_sales[]
+  item_product_sales      item_product_sales[]
+  brand                   brands?                   @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  category                categories?               @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sub_brand               sub_brands?               @relation(fields: [sub_brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model customers {
+  id                       Int         @id @default(autoincrement())
+  customer_name            String?     @db.VarChar(100)
+  email                    String?     @db.VarChar(100)
+  phone_number             String?     @db.VarChar(50)
+  cpf                      String?     @db.VarChar(100)
+  birth_date               DateTime?   @db.Date
+  gender                   String?     @db.VarChar(10)
+  store_id                 Int?
+  sub_brand_id             Int?
+  registration_origin      String?     @db.VarChar(20)
+  agree_terms              Boolean?    @default(false)
+  receive_promotions_email Boolean?    @default(false)
+  receive_promotions_sms   Boolean?    @default(false)
+  created_at               DateTime?   @default(now()) @db.Timestamp(6)
+  store                    stores?     @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sub_brand                sub_brands? @relation(fields: [sub_brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sales                    sales[]
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model sales {
+  id                 Int                  @id @default(autoincrement())
+  store_id           Int
+  sub_brand_id       Int?
+  customer_id        Int?
+  channel_id         Int
+  cod_sale1          String?              @db.VarChar(100)
+  cod_sale2          String?              @db.VarChar(100)
+  created_at         DateTime             @db.Timestamp(6)
+  customer_name      String?              @db.VarChar(100)
+  sale_status_desc   String               @db.VarChar(100)
+  total_amount_items Decimal              @db.Decimal(10, 2)
+  total_discount     Decimal?             @default(0) @db.Decimal(10, 2)
+  total_increase     Decimal?             @default(0) @db.Decimal(10, 2)
+  delivery_fee       Decimal?             @default(0) @db.Decimal(10, 2)
+  service_tax_fee    Decimal?             @default(0) @db.Decimal(10, 2)
+  total_amount       Decimal              @db.Decimal(10, 2)
+  value_paid         Decimal?             @default(0) @db.Decimal(10, 2)
+  production_seconds Int?
+  delivery_seconds   Int?
+  people_quantity    Int?
+  discount_reason    String?              @db.VarChar(300)
+  increase_reason    String?              @db.VarChar(300)
+  origin             String?              @default("POS") @db.VarChar(100)
+  coupon_sales       coupon_sales[]
+  delivery_addresses delivery_addresses[]
+  delivery_sales     delivery_sales[]
+  payments           payments[]
+  product_sales      product_sales[]
+  channel            channels             @relation(fields: [channel_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  customer           customers?           @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  store              stores               @relation(fields: [store_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sub_brand          sub_brands?          @relation(fields: [sub_brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model product_sales {
+  id                 Int                  @id @default(autoincrement())
+  sale_id            Int
+  product_id         Int
+  quantity           Float
+  base_price         Float
+  total_price        Float
+  observations       String?              @db.VarChar(300)
+  item_product_sales item_product_sales[]
+  product            products             @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sale               sales                @relation(fields: [sale_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([product_id, sale_id], map: "idx_product_sales_product_sale")
+}
+
+model item_product_sales {
+  id                      Int                       @id @default(autoincrement())
+  product_sale_id         Int
+  item_id                 Int
+  option_group_id         Int?
+  quantity                Float
+  additional_price        Float
+  price                   Float
+  amount                  Float?                    @default(1)
+  observations            String?                   @db.VarChar(300)
+  item_item_product_sales item_item_product_sales[]
+  item                    items                     @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  option_group            option_groups?            @relation(fields: [option_group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  product_sale            product_sales             @relation(fields: [product_sale_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model item_item_product_sales {
+  id                   Int                @id @default(autoincrement())
+  item_product_sale_id Int
+  item_id              Int
+  option_group_id      Int?
+  quantity             Float
+  additional_price     Float
+  price                Float
+  amount               Float?             @default(1)
+  item                 items              @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  item_product_sale    item_product_sales @relation(fields: [item_product_sale_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  option_group         option_groups?     @relation(fields: [option_group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model delivery_sales {
+  id                 Int                  @id @default(autoincrement())
+  sale_id            Int
+  courier_id         String?              @db.VarChar(100)
+  courier_name       String?              @db.VarChar(100)
+  courier_phone      String?              @db.VarChar(100)
+  courier_type       String?              @db.VarChar(100)
+  delivered_by       String?              @db.VarChar(100)
+  delivery_type      String?              @db.VarChar(100)
+  status             String?              @db.VarChar(100)
+  delivery_fee       Float?
+  courier_fee        Float?
+  timing             String?              @db.VarChar(100)
+  mode               String?              @db.VarChar(100)
+  delivery_addresses delivery_addresses[]
+  sale               sales                @relation(fields: [sale_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model delivery_addresses {
+  id                Int             @id @default(autoincrement())
+  sale_id           Int
+  delivery_sale_id  Int?
+  street            String?         @db.VarChar(200)
+  number            String?         @db.VarChar(20)
+  complement        String?         @db.VarChar(200)
+  formatted_address String?         @db.VarChar(500)
+  neighborhood      String?         @db.VarChar(100)
+  city              String?         @db.VarChar(100)
+  state             String?         @db.VarChar(50)
+  country           String?         @db.VarChar(100)
+  postal_code       String?         @db.VarChar(20)
+  reference         String?         @db.VarChar(300)
+  latitude          Float?
+  longitude         Float?
+  delivery_sale     delivery_sales? @relation(fields: [delivery_sale_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sale              sales           @relation(fields: [sale_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model payment_types {
+  id          Int        @id @default(autoincrement())
+  brand_id    Int?
+  description String     @db.VarChar(100)
+  brand       brands?    @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  payments    payments[]
+}
+
+model payments {
+  id              Int            @id @default(autoincrement())
+  sale_id         Int
+  payment_type_id Int?
+  value           Decimal        @db.Decimal(10, 2)
+  is_online       Boolean?       @default(false)
+  description     String?        @db.VarChar(100)
+  currency        String?        @default("BRL") @db.VarChar(10)
+  payment_type    payment_types? @relation(fields: [payment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sale            sales          @relation(fields: [sale_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model coupons {
+  id             Int            @id @default(autoincrement())
+  brand_id       Int?
+  code           String         @db.VarChar(50)
+  discount_type  String?        @db.VarChar(1)
+  discount_value Decimal?       @db.Decimal(10, 2)
+  is_active      Boolean?       @default(true)
+  valid_from     DateTime?      @db.Timestamp(6)
+  valid_until    DateTime?      @db.Timestamp(6)
+  coupon_sales   coupon_sales[]
+  brand          brands?        @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model coupon_sales {
+  id          Int      @id @default(autoincrement())
+  sale_id     Int?
+  coupon_id   Int?
+  value       Float?
+  target      String?  @db.VarChar(100)
+  sponsorship String?  @db.VarChar(100)
+  coupon      coupons? @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sale        sales?   @relation(fields: [sale_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Dashboard {
+  id        Int      @id @default(autoincrement())
+  name      String
+  config    Json
+  created_at DateTime @default(now())
+}
