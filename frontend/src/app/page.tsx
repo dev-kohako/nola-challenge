@@ -79,7 +79,7 @@ export const DashboardPage = () => {
               Exporte relatórios personalizados e métricas detalhadas.
             </p>
             <div className="mt-auto pt-2">
-              <Link href="/reports">
+              <Link href="/explore">
                 <Button variant="outline" size="sm">
                   Ver Relatórios
                 </Button>
