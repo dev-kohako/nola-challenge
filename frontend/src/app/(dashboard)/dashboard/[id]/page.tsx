@@ -46,19 +46,19 @@ export default function DashboardDetailsPage() {
   }
 
   return (
-    <main className="py-4 md:p-6 w-full max-w-5xl mx-auto space-y-6">
+    <main className="py-6 w-full max-w-7xl mx-auto space-y-8 overflow-hidden">
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-center sm:text-left">
           {dashboard.name}
         </h1>
-        <div className="space-x-2">
+        <div className="space-x-2 space-y-4">
                   <Button
           onClick={() => refetch()}
           className="self-center sm:self-auto w-full sm:w-auto"
         >
           <RefreshCcw className="mr-2 h-4 w-4" /> Atualizar
         </Button>
-        <Button variant="outline" onClick={copyLink}>
+        <Button variant="outline" className="self-center sm:self-auto w-full sm:w-auto" onClick={copyLink}>
           <Copy className="w-4 h-4 mr-2" /> Copiar link
         </Button>
         </div>
