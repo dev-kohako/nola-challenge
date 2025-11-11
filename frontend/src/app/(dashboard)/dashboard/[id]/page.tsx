@@ -52,26 +52,30 @@ export default function DashboardDetailsPage() {
           {dashboard.name}
         </h1>
         <div className="space-x-2 space-y-4">
-                  <Button
-          onClick={() => refetch()}
-          className="self-center sm:self-auto w-full sm:w-auto"
-        >
-          <RefreshCcw className="mr-2 h-4 w-4" /> Atualizar
-        </Button>
-        <Button variant="outline" className="self-center sm:self-auto w-full sm:w-auto" onClick={copyLink}>
-          <Copy className="w-4 h-4 mr-2" /> Copiar link
-        </Button>
+          <Button
+            onClick={() => refetch()}
+            className="self-center sm:self-auto w-full sm:w-auto"
+          >
+            <RefreshCcw className="mr-2 h-4 w-4" /> Atualizar
+          </Button>
+          <Button
+            variant="outline"
+            className="self-center sm:self-auto w-full sm:w-auto"
+            onClick={copyLink}
+          >
+            <Copy className="w-4 h-4 mr-2" /> Copiar link
+          </Button>
         </div>
       </header>
 
       <DashboardChart dashboard={dashboard} />
 
-      <Card className="w-full">
+      <Card className="w-full overflow-hidden">
         <CardHeader>
           <CardTitle>Configuração</CardTitle>
         </CardHeader>
         <CardContent className="overflow-x-auto">
-          <pre className="text-xs sm:text-sm bg-muted p-3 sm:p-4 rounded-md min-w-full">
+          <pre className="text-xs sm:text-sm bg-muted p-3 sm:p-4 rounded-md w-full wrap-break-word whitespace-pre-wrap">
             {JSON.stringify(dashboard.config, null, 2)}
           </pre>
         </CardContent>
